@@ -35,13 +35,22 @@ public class BasicProducerExample {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 
         Producer<String, String> producer = new KafkaProducer<String, String>(props);
+
+
+        String test = "{\"version\":{\"version\":\"1.0.0\"},\"message\":{\"entities\":[{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Reference\",\"id\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644035\",\"version\":0,\"typeName\":\"hive_db\",\"state\":\"ACTIVE\"},\"typeName\":\"hive_db\",\"values\":{\"name\":\"default\",\"location\":\"hdfs://rs-atl-290517-1.openstacklocal:8020/apps/hive/warehouse\",\"description\":\"Default Hive database\",\"ownerType\":2,\"qualifiedName\":\"default@ce30\",\"owner\":\"public\",\"clusterName\":\"ce30\",\"parameters\":{}},\"traitNames\":[],\"traits\":{},\"systemAttributes\":{}},{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Reference\",\"id\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644034\",\"version\":0,\"typeName\":\"hive_table\",\"state\":\"ACTIVE\"},\"typeName\":\"hive_table\",\"values\":{\"tableType\":\"MANAGED_TABLE\",\"name\":\"testtabl1e\",\"createTime\":\"2017-06-01T09:21:32.000Z\",\"temporary\":false,\"db\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Reference\",\"id\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644035\",\"version\":0,\"typeName\":\"hive_db\",\"state\":\"ACTIVE\"},\"typeName\":\"hive_db\",\"values\":{\"name\":\"default\",\"location\":\"hdfs://rs-atl-290517-1.openstacklocal:8020/apps/hive/warehouse\",\"description\":\"Default Hive database\",\"ownerType\":2,\"qualifiedName\":\"default@ce30\",\"owner\":\"public\",\"clusterName\":\"ce30\",\"parameters\":{}},\"traitNames\":[],\"traits\":{},\"systemAttributes\":{}},\"retention\":0,\"qualifiedName\":\"default.testtabl1e@ce30\",\"columns\":[{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Reference\",\"id\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644032\",\"version\":0,\"typeName\":\"hive_column\",\"state\":\"ACTIVE\"},\"typeName\":\"hive_column\",\"values\":{\"name\":\"name\",\"qualifiedName\":\"default.testtabl1e.name@ce30\",\"position\":0,\"owner\":\"anonymous\",\"type\":\"int\",\"table\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644034\",\"version\":0,\"typeName\":\"hive_table\",\"state\":\"ACTIVE\"}},\"traitNames\":[],\"traits\":{},\"systemAttributes\":{}}],\"lastAccessTime\":\"2017-06-01T09:21:32.000Z\",\"owner\":\"anonymous\",\"sd\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Reference\",\"id\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644033\",\"version\":0,\"typeName\":\"hive_storagedesc\",\"state\":\"ACTIVE\"},\"typeName\":\"hive_storagedesc\",\"values\":{\"location\":\"hdfs://rs-atl-290517-1.openstacklocal:8020/apps/hive/warehouse/testtabl1e\",\"serdeInfo\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Struct\",\"typeName\":\"hive_serde\",\"values\":{\"serializationLib\":\"org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe\",\"parameters\":{\"serialization.format\":\"1\"}}},\"qualifiedName\":\"default.testtabl1e@ce30_storage\",\"outputFormat\":\"org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat\",\"compressed\":false,\"numBuckets\":-1,\"inputFormat\":\"org.apache.hadoop.mapred.TextInputFormat\",\"parameters\":{},\"storedAsSubDirectories\":false,\"table\":{\"jsonClass\":\"org.apache.atlas.typesystem.json.InstanceSerialization$_Id\",\"id\":\"-269129065644034\",\"version\":0,\"typeName\":\"hive_table\",\"state\":\"ACTIVE\"}},\"traitNames\":[],\"traits\":{},\"systemAttributes\":{}},\"parameters\":{\"rawDataSize\":\"0\",\"numFiles\":\"0\",\"transient_lastDdlTime\":\"1496308892\",\"totalSize\":\"0\",\"COLUMN_STATS_ACCURATE\":\"{\\\"BASIC_STATS\\\":\\\"true\\\"}\",\"numRows\":\"0\"},\"partitionKeys\":[]},\"traitNames\":[],\"traits\":{},\"systemAttributes\":{}}],\"type\":\"ENTITY_FULL_UPDATE\",\"user\":\"anonymous\"}}";
+
         TestCallback callback = new TestCallback();
-        Random rnd = new Random();
-        for (long i = 0; i < 100 ; i++) {
+        //for (long i = 0; i < 10 ; i++) {
+            Random rnd = new Random();
+
+            String table = "{\"version\":{\"version\":\"1.0.0\"},\"message\":{\"typeName\":\"hive_table\",\"attribute\":\"qualifiedName\",\"attributeValue\":\"default."+rnd+"\",\"type\":\"ENTITY_DELETE\",\"user\":\"ambari-qa\"}}";
             ProducerRecord<String, String> data = new ProducerRecord<String, String>(
-                    "testhwx", "key-" + i, "message-"+i );
+                    "ATLAS_HOOK", "key-" , test );
             producer.send(data, callback);
-        }
+        //}
+
+
+
 
         producer.close();
     }
