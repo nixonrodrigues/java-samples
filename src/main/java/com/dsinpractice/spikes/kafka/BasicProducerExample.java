@@ -16,8 +16,6 @@ public class BasicProducerExample {
 
     public static void main(String[] args){
 
-<<<<<<< HEAD
-
         int from = 0;
         int to = 10;
         String bootstrapserver = "localhost:9027";
