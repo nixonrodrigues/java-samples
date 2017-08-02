@@ -19,16 +19,18 @@ public class BasicProducerExample {
 
         int from = 0;
         int to = 10;
+        String bootstrapserver = "localhost:9027";
         try{
             from = Integer.parseInt(args[0]);
             to = Integer.parseInt(args[1]);
+            bootstrapserver = args[2];
         }catch (Exception e){
 
         }
 
 
         Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9027");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapserver);
 
         //configure the following three settings for SSL Encryption
 //        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
