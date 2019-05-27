@@ -4,7 +4,7 @@
 
     <groupId>com.dsinpractice.spikes</groupId>
     <artifactId>java-samples</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>java-samples</name>
@@ -16,6 +16,7 @@
         <spring.security.version>3.1.3.RELEASE</spring.security.version>
         <spring-ldap-core.version>1.3.1.RELEASE</spring-ldap-core.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
+        <hadoop.version>2.6.0</hadoop.version>
     </properties>
 
     <build>
@@ -101,7 +102,7 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
-            <version>2.7.2</version>
+            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.atlas</groupId>
@@ -172,6 +173,30 @@
             <artifactId>spring-security-ldap</artifactId>
             <version>${spring.security.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+            <classifier>tests</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>2.6.0</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <type>test-jar</type>
+            <version>2.6.0</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+
+
+
 
         <dependency>
             <groupId>org.mockito</groupId>
