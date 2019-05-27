@@ -10,10 +10,22 @@ import java.security.NoSuchAlgorithmException;
  */
 public class AtlasTest {
     public static void main(String[] args) throws Exception {
-        AtlasClientCatchTimeout atlas = new AtlasClientCatchTimeout("LOCAL", "admin", "admin");
-        for (int i = 0; i < 500; i++) {
+        int start = 0;
+        int noOfrecords = 10;
+        String atlasEndPoint = "http://localhost:21000";
+        try{
+             start = Integer.parseInt(args[0]);
+            noOfrecords = Integer.parseInt(args[1]);
+            atlasEndPoint = args[2];
+
+
+        }catch (Exception e) {
+            System.out.println(" args missing - start noOfRecords atlasEndPoint ");
+        }
+        AtlasClientCatchTimeout atlas = new AtlasClientCatchTimeout( atlasEndPoint, "admin", "admin");
+        for (int i = start; i < start + noOfrecords ; i++) {
             atlas.createRawZoneFileEntity(String.format("test3_%d", i), String.format("test3_%d", i), String.format("test3_%d", i), "test", "x", "x", "x", "x", "x", -1, "x", "x");
-            System.out.println(500 - i);
+            System.out.println(" Created  " +  start + i +" Entity");
         }
     }
 }

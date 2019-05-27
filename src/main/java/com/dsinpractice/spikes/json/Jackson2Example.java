@@ -24,7 +24,7 @@ public class Jackson2Example {
         try {
 
             // Convert JSON string from file to Object
-            AtlasSimpleAuthzPolicy policy = mapper.readValue(new File("/Users/nixon/projects/apache-atlas-1.0.0-SNAPSHOT/conf/atlas-simple-authz-policy.json"), AtlasSimpleAuthzPolicy.class);
+            AtlasSimpleAuthzPolicy policy = mapper.readValue(new File("/Users/nixon/projects/apache-atlas-2.0.0-SNAPSHOT/conf/atlas-simple-authz-policy.json"), AtlasSimpleAuthzPolicy.class);
             System.out.println(policy);
 
 //            // Convert JSON string to Object
@@ -54,6 +54,16 @@ public class Jackson2Example {
 
                 System.out.println(" AtlasTypePermission permision"+ permission);
             }
+
+            List<AtlasSimpleAuthzPolicy.AtlasRelationshipPermission> permissionRelationshipList1 = role_admin.getRelationshipPermissions();
+
+            for(AtlasSimpleAuthzPolicy.AtlasRelationshipPermission permission:permissionRelationshipList1) {
+
+//                System.out.println(" relationShipPermisionrelationShipPermision permision"+ permission.getEntityEndOneClassification());
+//                System.out.println(" relationShipPermisionrelationShipPermision permision"+ permission.getRelationshipTypes());
+//                System.out.println(" relationShipPermisionrelationShipPermision permision"+ permission.getEntityEndTwoId());
+            }
+
 
 
 

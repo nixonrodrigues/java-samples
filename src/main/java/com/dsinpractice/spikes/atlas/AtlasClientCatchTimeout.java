@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.sun.jersey.api.client.ClientHandlerException;
 import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;
+import org.apache.atlas.hook.AtlasHook;
 import org.apache.atlas.typesystem.Referenceable;
 import org.apache.atlas.typesystem.TypesDef;
 import org.apache.atlas.typesystem.json.InstanceSerialization;
@@ -22,16 +23,13 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by AmirM on 03/08/17.
  */
 
-final class AtlasEntityMapEntry<String, Referenceable> implements Map.Entry ,Serializable {
+final class AtlasEntityMapEntry<String, Referenceable> implements Map.Entry ,Serializable  {
     private final String entityId;
     private Referenceable entity;
 
@@ -85,7 +83,13 @@ class SSLVerificationOverrider {
     }
 }
 
-public class AtlasClientCatchTimeout {
+public class AtlasClientCatchTimeout extends AtlasHook {
+
+    @Override
+    protected String getNumberOfRetriesPropertyKey() {
+        return null;
+    }
+
     /**
      * this is a wrapper for the atlas client, written for the EDP.
      * on this object initialization, the Types will be created on atlas, if not already exist.
@@ -125,8 +129,8 @@ public class AtlasClientCatchTimeout {
 
     public static class URL {
         public static final String LOCAL = "http://localhost:21000";
-        public static final String INT = "https://shzambari01.resource.bank:21443";
-        public static final String PROD = "https://phzambari01.resource.bank:21443";
+        public static final String INT = "https://localhost:21443";
+        public static final String PROD = "https://localhost:21443";
     }
 
     public static class Types {
@@ -195,17 +199,17 @@ public class AtlasClientCatchTimeout {
             TypesUtil.createRequiredAttrDef(Attributes.REPRESENTATION, DataTypes.STRING_TYPE)
     };
 
-    public AtlasClientCatchTimeout(String environment, String user, String pass) throws AtlasServiceException, InterruptedException, KeyManagementException, NoSuchAlgorithmException, DataLakeException {
-        String url = null;
-        switch (environment) {
-            case "LOCAL" : url = URL.LOCAL;
-                break;
-            case "INT" : url = URL.INT;
-                break;
-            case "PROD" : url = URL.PROD;
-                break;
-            default: throw new DataLakeException("environment parameter must be on of: LOCAL, INT, PROD");
-        }
+    public AtlasClientCatchTimeout(String url, String user, String pass) throws AtlasServiceException, InterruptedException, KeyManagementException, NoSuchAlgorithmException, DataLakeException {
+//        String url = null;
+//        switch (environment) {
+//            case "LOCAL" : url = URL.LOCAL;
+//                break;
+//            case "INT" : url = URL.INT;
+//                break;
+//            case "PROD" : url = URL.PROD;
+//                break;
+//            default: throw new DataLakeException("environment parameter must be on of: LOCAL, INT, PROD");
+//        }
         SSLVerificationOverrider.override();
         atlasClient = new AtlasClient(new String[]{url}, new String[]{user, pass});
         this.createTypes();
@@ -273,6 +277,8 @@ public class AtlasClientCatchTimeout {
         entity.set(Attributes.OWNER, owner);
         entity.set(Attributes.NAME, sysName+'|'+srcName);
 
+        ArrayList<Referenceable> entityList = new ArrayList();
+        entityList.add(entity);
         // isDeleted always 'false' on creation
         entity.set(Attributes.ISDELETED, false);
 
@@ -281,7 +287,7 @@ public class AtlasClientCatchTimeout {
         return createEntity(jsonEntity);
     }
 
-    public String createRawZoneFileEntity(String fullPath,
+    public void createRawZoneFileEntity(String fullPath,
                                           String sysPath,
                                           String sysName,
                                           String srcName,
@@ -323,10 +329,13 @@ public class AtlasClientCatchTimeout {
 
         entity.set(Attributes.SCHEME, scheme);
         entity.set(Attributes.TTL, TTL);
+        ArrayList<Referenceable> entityList = new ArrayList();
+        entityList.add(entity);
+//        String jsonEntity = InstanceSerialization.toJson(entity, true);
 
-        String jsonEntity = InstanceSerialization.toJson(entity, true);
+        notifyEntities("testAdmin",entityList );
 
-        return createEntity(jsonEntity);
+       // return createEntity(jsonEntity);
     }
 
     public String createOrUpdateDirEntity(String fullPath,

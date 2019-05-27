@@ -19,7 +19,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.PUBLIC_
 @JsonIgnoreProperties(ignoreUnknown=true)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class AtlasSimpleAuthzPolicy {
+public class AtlasSimpleAuthzPolicy implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Map<String, AtlasAuthzRole> roles;
@@ -57,20 +57,22 @@ public class AtlasSimpleAuthzPolicy {
     @JsonIgnoreProperties(ignoreUnknown=true)
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.PROPERTY)
-    public static class AtlasAuthzRole {
+    public static class AtlasAuthzRole implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private List<AtlasAdminPermission>  adminPermissions;
         private List<AtlasEntityPermission> entityPermissions;
         private List<AtlasTypePermission>   typePermissions;
+        private List<AtlasRelationshipPermission> relationshipPermissions;
 
         public AtlasAuthzRole() {
         }
 
-        public AtlasAuthzRole(List<AtlasAdminPermission> adminPermissions, List<AtlasEntityPermission> entityPermissions, List<AtlasTypePermission> typePermissions) {
+        public AtlasAuthzRole(List<AtlasAdminPermission> adminPermissions, List<AtlasEntityPermission> entityPermissions, List<AtlasTypePermission> typePermissions, List<AtlasRelationshipPermission> relationshipPermissions) {
             this.adminPermissions  = adminPermissions;
             this.entityPermissions = entityPermissions;
             this.typePermissions   = typePermissions;
+            this.relationshipPermissions = relationshipPermissions;
         }
 
         public List<AtlasAdminPermission> getAdminPermissions() {
@@ -96,6 +98,15 @@ public class AtlasSimpleAuthzPolicy {
         public void setTypePermissions(List<AtlasTypePermission> typePermissions) {
             this.typePermissions = typePermissions;
         }
+
+        public List<AtlasRelationshipPermission> getRelationshipPermissions() {
+            return relationshipPermissions;
+        }
+
+        public void setRelationshipPermissions(List<AtlasRelationshipPermission> relationshipPermissions) {
+            this.relationshipPermissions = relationshipPermissions;
+        }
+
     }
 
     @JsonAutoDetect(getterVisibility=PUBLIC_ONLY, setterVisibility=PUBLIC_ONLY, fieldVisibility=NONE)
@@ -132,15 +143,6 @@ public class AtlasSimpleAuthzPolicy {
     public static class AtlasTypePermission implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Override
-        public String toString() {
-            return "AtlasTypePermission{" +
-                    "privileges=" + privileges +
-                    ", typeCategories=" + typeCategories +
-                    ", typeNames=" + typeNames +
-                    '}';
-        }
-
         private List<String> privileges;     // name of AtlasPrivilege enum, wildcards supported
         private List<String> typeCategories; // category of the type (entity, classification, struct, enum, relationship), wildcards supported
         private List<String> typeNames;      // name of type, wildcards supported
@@ -166,8 +168,8 @@ public class AtlasSimpleAuthzPolicy {
             return typeCategories;
         }
 
-        public void setTypeCategories(List<String> typeCategory) {
-            this.typeCategories = typeCategory;
+        public void setTypeCategories(List<String> typeCategories) {
+            this.typeCategories = typeCategories;
         }
 
         public List<String> getTypeNames() {
@@ -188,9 +190,6 @@ public class AtlasSimpleAuthzPolicy {
         private static final long serialVersionUID = 1L;
 
         private List<String> privileges;      // name of AtlasPrivilege enum, wildcards supported
-
-
-
         private List<String> entityTypes;     // name of entity-type, wildcards supported
         private List<String> entityIds;       // value of entity-unique attribute, wildcards supported
         private List<String> classifications; // name of classification-type, wildcards supported
@@ -246,18 +245,108 @@ public class AtlasSimpleAuthzPolicy {
         public void setAttributes(List<String> attributes) {
             this.attributes = attributes;
         }
+    }
 
-        @Override
-        public String toString() {
-            return "AtlasEntityPermission{" +
-                    "privileges=" + privileges +
-                    ", entityTypes=" + entityTypes +
-                    ", entityIds=" + entityIds +
-                    ", classifications=" + classifications +
-                    ", attributes=" + attributes +
-                    '}';
+
+    @JsonAutoDetect(getterVisibility=PUBLIC_ONLY, setterVisibility=PUBLIC_ONLY, fieldVisibility=NONE)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.PROPERTY)
+    public static class AtlasRelationshipPermission implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private List<String> privileges;               // name of AtlasPrivilege enum, wildcards supported
+        private List<String> relationshipTypes;        // name of relationship-type, wildcards supported
+        private List<String> end1EntityType;           // name of end1 entity-type, wildcards supported
+        private List<String> end1EntityId;             // value of end1 entity-unique attribute, wildcards supported
+        private List<String> end1EntityClassification; // name of end1 classification-type, wildcards supported
+        private List<String> end2EntityType;           // name of end2 entity-type, wildcards supported
+        private List<String> end2EntityId;             // value of end2 entity-unique attribute, wildcards supported
+        private List<String> end2EntityClassification; // name of end2 classification-type, wildcards supported
+
+
+        public AtlasRelationshipPermission() {
+        }
+
+        public AtlasRelationshipPermission(List<String> privileges, List<String> relationshipTypes, List<String> end1Entitytype, List<String> end1EntityId, List<String> end1EntityClassification, List<String> end2EntityType, List<String> end2EntityId, List<String> end2EntityClassification) {
+            this.privileges               = privileges;
+            this.relationshipTypes        = relationshipTypes;
+            this.end1EntityType           = end1Entitytype;
+            this.end1EntityId             = end1EntityId;
+            this.end1EntityClassification = end1EntityClassification;
+            this.end2EntityType           = end2EntityType;
+            this.end2EntityId             = end2EntityId;
+            this.end2EntityClassification = end2EntityClassification;
+        }
+
+        public List<String> getPrivileges() {
+            return privileges;
+        }
+
+        public void setPrivileges(List<String> privileges) {
+            this.privileges = privileges;
+        }
+
+        public List<String> getRelationshipTypes() {
+            return relationshipTypes;
+        }
+
+        public void setRelationshipTypes(List<String> relationshipTypes) {
+            this.relationshipTypes = relationshipTypes;
+        }
+
+        public List<String> getEnd1EntityType() {
+            return end1EntityType;
+        }
+
+        public void setEnd1EntityType(List<String> end1EntityType) {
+            this.end1EntityType = end1EntityType;
+        }
+
+        public List<String> getEnd1EntityId() {
+            return end1EntityId;
+        }
+
+        public void setEnd1EntityId(List<String> end1EntityId) {
+            this.end1EntityId = end1EntityId;
+        }
+
+        public List<String> getEnd1EntityClassification() {
+            return end1EntityClassification;
+        }
+
+        public void setEnd1EntityClassification(List<String> end1EntityClassification) {
+            this.end1EntityClassification = end1EntityClassification;
+        }
+
+        public List<String> getEnd2EntityType() {
+            return end2EntityType;
+        }
+
+        public void setEnd2EntityType(List<String> end2EntityType) {
+            this.end2EntityType = end2EntityType;
+        }
+
+        public List<String> getEnd2EntityId() {
+            return end2EntityId;
+        }
+
+        public void setEnd2EntityId(List<String> end2EntityId) {
+            this.end2EntityId = end2EntityId;
+        }
+
+        public List<String> getEnd2EntityClassification() {
+            return end2EntityClassification;
+        }
+
+        public void setEnd2EntityClassification(List<String> end2EntityClassification) {
+            this.end2EntityClassification = end2EntityClassification;
         }
     }
 
+
+
 }
+
 
